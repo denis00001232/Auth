@@ -1,0 +1,26 @@
+server:
+  port: 9001
+
+spring:
+  datasource:
+    url: "jdbc:postgresql://${DB_HOST:localhost}:5432/axcolotl"
+    username: axcolotl
+    password: 186Kdc9899K
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://${KEYCLOAK_HOST:localhost}:8080/realms/axcolotl"
+
+secured: ${SECURED_HTTP:http}
