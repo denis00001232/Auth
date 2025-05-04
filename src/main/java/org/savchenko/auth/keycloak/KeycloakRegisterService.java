@@ -3,15 +3,13 @@ package org.savchenko.auth.keycloak;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
+import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.savchenko.auth.dto.TokenBoxDto;
 import org.savchenko.auth.dto.UserRegisterDto;
-import org.savchenko.auth.exception.EmailAlreadyExistsException;
-import org.savchenko.auth.exception.KeyCloakRegistrationException;
-import org.savchenko.auth.exception.LogInException;
-import org.savchenko.auth.exception.UsernameAlreadyExistsException;
+import org.savchenko.auth.exception.*;
 import org.savchenko.auth.repository.UserRepository;
 import org.savchenko.auth.service.PathManager;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +23,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,24 +42,37 @@ public class KeycloakRegisterService {
         user.setLastName(userRegisterDto.getSurname());
         user.setEmail(userRegisterDto.getEmail());
         user.setEnabled(true);
+        user.setRequiredActions(Collections.singletonList("VERIFY_EMAIL"));
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
         credential.setValue(userRegisterDto.getPassword());
         credential.setTemporary(false);
         user.setCredentials(List.of(credential));
-
         try (Response response = keycloak.realm("axcolotl")
                 .users()
                 .create(user)) {
             if (response.getStatus() == 201) {
                 System.out.println("Пользователь создан");
-            } else {
-
+                keycloak.realm("axcolotl")
+                        .users()
+                        .get(CreatedResponseUtil.getCreatedId(response))
+                        .sendVerifyEmail();
             }
         }
     }
 
-    public Optional<UserRepresentation> findUserByUsername(String username) {
+    public void recoverPassword(String email) {
+        Optional<UserRepresentation> userRepresentation = findUserByEmail(email);
+        if (userRepresentation.isEmpty()) {
+            throw new RecoverPasswordException();
+        }
+        keycloak.realm("axcolotl")
+                .users()
+                .get(userRepresentation.get().getId())
+                .executeActionsEmail(List.of("UPDATE_PASSWORD"));
+    }
+
+    private Optional<UserRepresentation> findUserByUsername(String username) {
         List<UserRepresentation> users = keycloak.
                 realm("axcolotl").
                 users().
@@ -70,7 +82,7 @@ public class KeycloakRegisterService {
                 .findFirst();
     }
 
-    public Optional<UserRepresentation> findUserByEmail(String email) {
+    private Optional<UserRepresentation> findUserByEmail(String email) {
         List<UserRepresentation> users = keycloak.
                 realm("axcolotl").
                 users().
@@ -80,7 +92,7 @@ public class KeycloakRegisterService {
                 .findFirst();
     }
 
-    public boolean deleteUserById(String userId) {
+    private boolean deleteUserById(String userId) {
         try {
             keycloak.realm("axcolotl")
                     .users()
@@ -95,7 +107,7 @@ public class KeycloakRegisterService {
         }
     }
 
-    public void deleteUserIfEmailNotVerified(Optional<UserRepresentation> user, RuntimeException runtimeException) {
+    private void deleteUserIfEmailNotVerified(Optional<UserRepresentation> user, RuntimeException runtimeException) {
         if (user.isEmpty()) return;
         UserRepresentation userRepresentation = user.get();
         if (userRepresentation.isEmailVerified()) {
@@ -116,6 +128,7 @@ public class KeycloakRegisterService {
         Optional<UserRepresentation> user = findUserByEmail(email);
         deleteUserIfEmailNotVerified(user, new EmailAlreadyExistsException());
     }
+
 
 
 

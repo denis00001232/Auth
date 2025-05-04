@@ -62,6 +62,12 @@ public class AuthController {
         return keyCloakTokenManager.refresh(refreshToken);
     }
 
+    @PostMapping("/recover")
+    public String recover(@RequestBody String email) {
+        keycloakRegisterService.recoverPassword(email);
+        return "Успешно";
+    }
+
     @GetMapping("/test")
     public String test(@AuthenticationPrincipal Jwt jwt) {
         return jwt.getClaimAsString("preferred_username") + " был успешно протестирован";
