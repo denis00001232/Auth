@@ -48,12 +48,12 @@ public class KeycloakRegisterService {
         credential.setValue(userRegisterDto.getPassword());
         credential.setTemporary(false);
         user.setCredentials(List.of(credential));
-        try (Response response = keycloak.realm("axcolotl")
+        try (Response response = keycloak.realm("axolotl")
                 .users()
                 .create(user)) {
             if (response.getStatus() == 201) {
                 System.out.println("Пользователь создан");
-                keycloak.realm("axcolotl")
+                keycloak.realm("axolotl")
                         .users()
                         .get(CreatedResponseUtil.getCreatedId(response))
                         .sendVerifyEmail();
@@ -66,7 +66,7 @@ public class KeycloakRegisterService {
         if (userRepresentation.isEmpty()) {
             throw new RecoverPasswordException();
         }
-        keycloak.realm("axcolotl")
+        keycloak.realm("axolotl")
                 .users()
                 .get(userRepresentation.get().getId())
                 .executeActionsEmail(List.of("UPDATE_PASSWORD"));
@@ -74,7 +74,7 @@ public class KeycloakRegisterService {
 
     private Optional<UserRepresentation> findUserByUsername(String username) {
         List<UserRepresentation> users = keycloak.
-                realm("axcolotl").
+                realm("axolotl").
                 users().
                 search(username, true);
         return users.stream()
@@ -84,7 +84,7 @@ public class KeycloakRegisterService {
 
     private Optional<UserRepresentation> findUserByEmail(String email) {
         List<UserRepresentation> users = keycloak.
-                realm("axcolotl").
+                realm("axolotl").
                 users().
                 search(null, null, null, email, 0, 1);
         return users.stream()
@@ -94,7 +94,7 @@ public class KeycloakRegisterService {
 
     private boolean deleteUserById(String userId) {
         try {
-            keycloak.realm("axcolotl")
+            keycloak.realm("axolotl")
                     .users()
                     .delete(userId);
             return true;

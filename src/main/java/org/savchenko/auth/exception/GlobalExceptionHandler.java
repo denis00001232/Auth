@@ -22,6 +22,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("ошибка", ex.getMessage()));
     }
 
+    @ExceptionHandler(LogInException.class)
+    public ResponseEntity<?> handleLogInExists(LogInException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("ошибка", ex.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: axolotl
+      POSTGRES_USER: axolotl
+      POSTGRES_PASSWORD: 186Kdc9899K
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.2
+    container_name: keycloak
+    command: start-dev
+    restart: always
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: 186Kdc9899K
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/axolotl
+      KC_DB_USERNAME: axolotl
+      KC_DB_PASSWORD: 186Kdc9899K
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:

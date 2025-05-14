@@ -19,9 +19,9 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class KeyCloakTokenManager {
     private final PathManager pathManager;
-    private final String keycloakTokenUrl = "/realms/axcolotl/protocol/openid-connect/token";
+    private final String keycloakTokenUrl = "/realms/axolotl/protocol/openid-connect/token";
     private final String clientId = "client";
-    private final String clientSecret = "BKLXUpeonBK4FWgzSm8bl2Ni1lSHoXEC";
+    private final String clientSecret = "1I9ExWWxeOFd9vFUlUMYSRXX8WDpPo73";
     private final RestTemplate restTemplate;
 
     public TokenBoxDto login(String username, String password) {
@@ -48,7 +48,6 @@ public class KeyCloakTokenManager {
     public TokenBoxDto refresh(String refreshToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "refresh_token");
         body.add("client_id", clientId);

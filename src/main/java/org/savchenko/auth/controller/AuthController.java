@@ -2,6 +2,7 @@ package org.savchenko.auth.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.savchenko.auth.dto.Message;
 import org.savchenko.auth.dto.TokenBoxDto;
 import org.savchenko.auth.dto.UserLoginDto;
 import org.savchenko.auth.dto.UserRegisterDto;
@@ -11,6 +12,7 @@ import org.savchenko.auth.keycloak.KeyCloakTokenManager;
 import org.savchenko.auth.keycloak.KeycloakRegisterService;
 import org.savchenko.auth.model.User;
 import org.savchenko.auth.repository.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +35,7 @@ public class AuthController {
      * @param userRegisterDto
      */
     @PostMapping("/register")
-    public String register(@RequestBody @Valid UserRegisterDto userRegisterDto) {
+    public ResponseEntity<Message> register(@RequestBody @Valid UserRegisterDto userRegisterDto) {
         userRegisterDto.setUsername(userRegisterDto.getUsername().toLowerCase());
         userRegisterDto.setEmail(userRegisterDto.getEmail().toLowerCase());
 
@@ -49,7 +51,7 @@ public class AuthController {
         }
         keycloakRegisterService.createUser(userRegisterDto);
         userRepository.save(new User(userRegisterDto));
-        return "успешно";
+        return ResponseEntity.ok(new Message("Успех"));
     }
 
     @PostMapping("/login")
@@ -63,14 +65,14 @@ public class AuthController {
     }
 
     @PostMapping("/recover")
-    public String recover(@RequestBody String email) {
+    public Message recover(@RequestBody String email) {
         keycloakRegisterService.recoverPassword(email);
-        return "Успешно";
+        return new Message("Успешно");
     }
 
     @GetMapping("/test")
-    public String test(@AuthenticationPrincipal Jwt jwt) {
-        return jwt.getClaimAsString("preferred_username") + " был успешно протестирован";
+    public Message test(@AuthenticationPrincipal Jwt jwt) {
+        return new Message(jwt.getClaimAsString("preferred_username") + " был успешно протестирован");
     }
 }
 

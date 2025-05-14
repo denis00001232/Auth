@@ -1,10 +1,16 @@
 server:
   port: 9001
+  address: 0.0.0.0
 
 spring:
+  logging:
+    level:
+      org:
+        springframework:
+          security=DEBUG:
   datasource:
-    url: "jdbc:postgresql://${DB_HOST:localhost}:5432/axcolotl"
-    username: axcolotl
+    url: "jdbc:postgresql://${DB_HOST:localhost}:5432/axolotl"
+    username: axolotl
     password: 186Kdc9899K
     driver-class-name: org.postgresql.Driver
 
@@ -21,6 +27,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: "http://${KEYCLOAK_HOST:localhost}:8080/realms/axcolotl"
+          issuer-uri: "http://${KEYCLOAK_HOST:localhost}:8080/realms/axolotl"
+
 
 secured: ${SECURED_HTTP:http}
