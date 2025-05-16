@@ -3,11 +3,6 @@ server:
   address: 0.0.0.0
 
 spring:
-  logging:
-    level:
-      org:
-        springframework:
-          security=DEBUG:
   datasource:
     url: "jdbc:postgresql://${DB_HOST:localhost}:5432/axolotl"
     username: axolotl
