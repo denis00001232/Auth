@@ -2,6 +2,7 @@ package org.savchenko.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,14 +13,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserRegisterDto {
     @Size(min = 2, max = 20, message = "Имя должно быть от 2 до 20 символов")
+    @Pattern(regexp = "^[^\\s]+$", message = "Имя не должно содержать пробелов")
     private String name;
 
     @NotBlank(message = "Фамилия обязательна")
+    @Pattern(regexp = "^[^\\s]+$", message = "Фамилия не должна содержать пробелов")
     @Size(min = 2, max = 20, message = "Фамилия должна быть от 2 до 20 символов")
     private String surname;
 
     @NotBlank(message = "username обязателен")
     @Size(min = 4, max = 20, message = "username должнен быть от 4 до 20 символов")
+    @Pattern(regexp = "^[a-z_]+$", message = "username может содержать только строчные латинские буквы и нижние подчёркивания")
     private String username;
 
     @NotBlank(message = "Email обязателен")

@@ -45,7 +45,29 @@ public class KeyCloakTokenManager {
         }
     }
 
+    public TokenBoxDto loginEmail(String email, String password) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "password");
+        body.add("client_id", clientId);
+        body.add("client_secret", clientSecret);
+        body.add("email", email);
+        body.add("password", password);
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+        try {
+            ResponseEntity<TokenBoxDto> response = restTemplate.postForEntity(
+                    pathManager.getKeyCloakAddress(keycloakTokenUrl),
+                    request,
+                    TokenBoxDto.class);
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            throw new LogInException();
+        }
+    }
+
     public TokenBoxDto refresh(String refreshToken) {
+        System.out.println(refreshToken);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();

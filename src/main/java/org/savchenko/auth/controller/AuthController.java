@@ -2,10 +2,7 @@ package org.savchenko.auth.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.savchenko.auth.dto.Message;
-import org.savchenko.auth.dto.TokenBoxDto;
-import org.savchenko.auth.dto.UserLoginDto;
-import org.savchenko.auth.dto.UserRegisterDto;
+import org.savchenko.auth.dto.*;
 import org.savchenko.auth.exception.EmailAlreadyExistsException;
 import org.savchenko.auth.exception.UsernameAlreadyExistsException;
 import org.savchenko.auth.keycloak.KeyCloakTokenManager;
@@ -59,9 +56,14 @@ public class AuthController {
         return keyCloakTokenManager.login(userLoginDto.getUsername().toLowerCase(), userLoginDto.getPassword());
     }
 
+    @PostMapping("/login_email")
+    public TokenBoxDto loginEmail(@RequestBody @Valid UserLoginEmailDto userLoginEmailDto) {
+        return keyCloakTokenManager.login(userLoginEmailDto.getEmail().toLowerCase(), userLoginEmailDto.getPassword());
+    }
+
     @PostMapping("/refresh")
-    public TokenBoxDto refresh(@RequestBody String refreshToken) {
-        return keyCloakTokenManager.refresh(refreshToken);
+    public TokenBoxDto refresh(@RequestBody TokenBoxDto tokenBoxDto) {
+        return keyCloakTokenManager.refresh(tokenBoxDto.getRefreshToken());
     }
 
     @PostMapping("/recover")
