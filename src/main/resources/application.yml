@@ -1,8 +1,10 @@
 server:
   port: 9001
-  address: 0.0.0.0
+  address: ${IP:0.0.0.0}
 
 spring:
+  application:
+    name: auth
   datasource:
     url: "jdbc:postgresql://${DB_HOST:localhost}:5432/axolotl"
     username: axolotl
@@ -23,6 +25,17 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: "http://${KEYCLOAK_HOST:localhost}:8080/realms/axolotl"
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    ip-address: ${server.address}
+    instance-id: ${server.address}:${server.port}
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
 
 
 secured: ${SECURED_HTTP:http}

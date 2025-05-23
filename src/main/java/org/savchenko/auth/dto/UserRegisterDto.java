@@ -23,7 +23,7 @@ public class UserRegisterDto {
 
     @NotBlank(message = "username обязателен")
     @Size(min = 4, max = 20, message = "username должнен быть от 4 до 20 символов")
-    @Pattern(regexp = "^[a-z_]+$", message = "username может содержать только строчные латинские буквы и нижние подчёркивания")
+    @Pattern(regexp = "^[a-z_0-9]+$", message = "username может содержать только строчные латинские буквы и нижние подчёркивания")
     private String username;
 
     @NotBlank(message = "Email обязателен")

@@ -13,6 +13,8 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - axolotl_network
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.2
@@ -30,6 +32,29 @@ services:
       - "8080:8080"
     depends_on:
       - postgres
+
+  discover:
+    container_name: discover
+    image: discover
+    restart: always
+    ports:
+      - "8761:8761"
+
+  eureka-gateway:
+    container_name: eureka-gateway
+    image: eureka-gateway
+    depends_on:
+      - discover
+    restart: always
+    environment:
+       IP: discover
+    ports:
+      - "8000:8000"
+
+
+networks:
+  axolotl_network:
+    driver: bridge
 
 volumes:
   pgdata:
