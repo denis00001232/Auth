@@ -10,6 +10,7 @@ import org.savchenko.auth.keycloak.KeycloakRegisterService;
 import org.savchenko.auth.model.User;
 import org.savchenko.auth.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ public class AuthController {
     private final UserRepository userRepository;
     private final KeycloakRegisterService keycloakRegisterService;
     private final KeyCloakTokenManager keyCloakTokenManager;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     /**
      * Регистрация работает следующим образом, у нас есть пользователь который в key cloak
@@ -48,16 +50,21 @@ public class AuthController {
         }
         keycloakRegisterService.createUser(userRegisterDto);
         userRepository.save(new User(userRegisterDto));
+        kafkaTemplate.send("person-register", userRegisterDto.getUsername());
         return ResponseEntity.ok(new Message("Успех"));
     }
 
-    @PostMapping("/login")
+    //@PostMapping("/login")
+    @Deprecated
     public TokenBoxDto login(@RequestBody @Valid UserLoginDto userLoginDto) {
+        kafkaTemplate.send("person-login", userLoginDto.getUsername());
         return keyCloakTokenManager.login(userLoginDto.getUsername().toLowerCase(), userLoginDto.getPassword());
     }
 
     @PostMapping("/login_email")
     public TokenBoxDto loginEmail(@RequestBody @Valid UserLoginEmailDto userLoginEmailDto) {
+        String username = userRepository.findByEmail(userLoginEmailDto.getEmail()).get().getUsername();
+        kafkaTemplate.send("person-login", username);
         return keyCloakTokenManager.login(userLoginEmailDto.getEmail().toLowerCase(), userLoginEmailDto.getPassword());
     }
 
