@@ -11,7 +11,7 @@ import org.savchenko.auth.dto.UserRegisterDto;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(
-        name = "_users",
+        name = "users",
         indexes = {
                 @Index(name = "idx_user_email", columnList = "email", unique = true),
                 @Index(name = "idx_user_username", columnList = "username", unique = true)

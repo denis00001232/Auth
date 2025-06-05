@@ -34,10 +34,10 @@ public class Config {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/test").authenticated()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("v3/api-docs").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}));
-
         return http.build();
     }
 
