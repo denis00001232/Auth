@@ -3,18 +3,16 @@ package org.savchenko.auth.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.savchenko.auth.dto.*;
-import org.savchenko.auth.exception.EmailAlreadyExistsException;
-import org.savchenko.auth.exception.UsernameAlreadyExistsException;
+
 import org.savchenko.auth.keycloak.KeyCloakTokenManager;
 import org.savchenko.auth.keycloak.KeycloakRegisterService;
 import org.savchenko.auth.model.User;
 import org.savchenko.auth.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -80,8 +78,9 @@ public class AuthController {
     }
 
     @GetMapping("/test")
-    public Message test(@AuthenticationPrincipal Jwt jwt) {
-        return new Message(jwt.getClaimAsString("preferred_username") + " был успешно протестирован");
+    public Message test(@RequestHeader String username, @RequestHeader Map<String, String> headers) {
+        System.out.println(headers);
+        return new Message(username + " был успешно протестирован");
     }
 }
 

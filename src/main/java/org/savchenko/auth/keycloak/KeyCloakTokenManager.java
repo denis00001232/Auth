@@ -21,7 +21,7 @@ public class KeyCloakTokenManager {
     private final PathManager pathManager;
     private final String keycloakTokenUrl = "/realms/axolotl/protocol/openid-connect/token";
     private final String clientId = "client";
-    private final String clientSecret = "1I9ExWWxeOFd9vFUlUMYSRXX8WDpPo73";
+    private final String clientSecret = "P25ANkT2XrZQ464kCYA1PW5Hxt6zOgRe";
     private final RestTemplate restTemplate;
 
     public TokenBoxDto login(String username, String password) {

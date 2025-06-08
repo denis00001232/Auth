@@ -42,7 +42,7 @@ public class KeycloakRegisterService {
         user.setLastName(userRegisterDto.getSurname());
         user.setEmail(userRegisterDto.getEmail());
         user.setEnabled(true);
-        user.setRequiredActions(Collections.singletonList("VERIFY_EMAIL"));
+        //user.setRequiredActions(Collections.singletonList("VERIFY_EMAIL"));
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
         credential.setValue(userRegisterDto.getPassword());
@@ -51,13 +51,13 @@ public class KeycloakRegisterService {
         try (Response response = keycloak.realm("axolotl")
                 .users()
                 .create(user)) {
-            if (response.getStatus() == 201) {
-                System.out.println("Пользователь создан");
-                keycloak.realm("axolotl")
-                        .users()
-                        .get(CreatedResponseUtil.getCreatedId(response))
-                        .sendVerifyEmail();
-            }
+//            if (response.getStatus() == 201) {
+//                System.out.println("Пользователь создан");
+//                keycloak.realm("axolotl")
+//                        .users()
+//                        .get(CreatedResponseUtil.getCreatedId(response))
+//                        .sendVerifyEmail();
+//            }
         }
     }
 
