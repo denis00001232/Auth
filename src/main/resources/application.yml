@@ -25,12 +25,6 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: "http://${KEYCLOAK_HOST:localhost}:8080/realms/axolotl"
-
 eureka:
   instance:
     prefer-ip-address: true
