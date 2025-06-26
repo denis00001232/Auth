@@ -11,7 +11,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     networks:
-      - axolotl_network
+      - nomad_network
     restart: always
 
   kafka:
@@ -30,7 +30,7 @@ services:
     depends_on:
       - zookeeper
     networks:
-      - axolotl_network
+      - nomad_network
     restart: always
 
   kafka-ui:
@@ -46,7 +46,7 @@ services:
       - kafka
       - zookeeper
     networks:
-      - axolotl_network
+      - nomad_network
     restart: always
 
   postgres:
@@ -54,30 +54,15 @@ services:
     container_name: postgres
     restart: always
     environment:
-      POSTGRES_DB: axolotl
-      POSTGRES_USER: axolotl
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 186Kdc9899K
     ports:
       - "5431:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - axolotl_network
-
-  postgres2:
-    image: postgres:15
-    container_name: postgres2
-    restart: always
-    environment:
-      POSTGRES_DB: axolotl
-      POSTGRES_USER: axolotl
-      POSTGRES_PASSWORD: 186Kdc9899K
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata_axolotl:/var/lib/postgresql/data
-    networks:
-      - axolotl_network
+      - nomad_network
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.2
@@ -88,15 +73,15 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: 186Kdc9899K
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/axolotl
-      KC_DB_USERNAME: axolotl
+      KC_DB_URL: jdbc:postgresql://postgres:5432/postgres
+      KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: 186Kdc9899K
     ports:
       - "8080:8080"
     depends_on:
       - postgres
     networks:
-      - axolotl_network
+      - nomad_network
 
   discover:
     container_name: discover
@@ -105,7 +90,7 @@ services:
     ports:
       - "8761:8761"
     networks:
-      - axolotl_network
+      - nomad_network
 
   eureka-gateway:
     container_name: eureka-gateway
@@ -118,12 +103,11 @@ services:
     ports:
       - "8000:8000"
     networks:
-      - axolotl_network
+      - nomad_network
 
 networks:
-  axolotl_network:
+  nomad_network:
     driver: bridge
 
 volumes:
   pgdata:
-  pgdata_axolotl:
