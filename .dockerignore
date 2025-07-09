@@ -1,6 +1,7 @@
 target
+*.jar
+*.bat
 .git
 .idea
 *.iml
-*.log
-HELP.md
+compose.yml

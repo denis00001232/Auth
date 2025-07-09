@@ -1,9 +1,6 @@
 package com.stupor.auth.controller;
 
-import com.stupor.auth.dto.controller.MessageDto;
-import com.stupor.auth.dto.controller.TokenBoxDto;
-import com.stupor.auth.dto.controller.UserLoginDto;
-import com.stupor.auth.dto.controller.UserRegisterDto;
+import com.stupor.auth.dto.controller.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final KeycloakRegisterService keycloakRegisterService;
@@ -43,6 +40,14 @@ public class AuthController {
         TokenBoxDto tokenBoxDto = keyCloakTokenManager.login(userLoginDto.getUsername().toLowerCase(),
                 userLoginDto.getPassword());
         kafkaProducer.sendLogin(userLoginDto);
+        return tokenBoxDto;
+    }
+
+    @PostMapping("/login-od")
+    @Deprecated
+    public TokenBoxDto loginOd(@RequestBody @Valid UserLoginOdDto userLoginOdDto) {
+        TokenBoxDto tokenBoxDto = keyCloakTokenManager.login(userLoginOdDto.getUsername().toLowerCase(),
+                userLoginOdDto.getPassword());
         return tokenBoxDto;
     }
 

@@ -22,7 +22,7 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://localhost:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://192.168.31.50:9094
       KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
@@ -86,24 +86,86 @@ services:
   discover:
     container_name: discover
     image: discover
-    restart: always
+    environment:
+      IP: ${IP}
+      KAFKA_URL: ${KAFKA_URL}
+      EUREKA_IP: ${EUREKA_IP}
     ports:
       - "8761:8761"
     networks:
       - nomad_network
+
+
+  auth:
+    container_name: auth
+    image: auth
+    ports:
+      - "9001:9001"
+    networks:
+      - nomad_network
+    environment:
+      IP: ${IP}
+      KAFKA_URL: ${KAFKA_URL}
+      EUREKA_IP: ${EUREKA_IP}
+      KEYCLOAK_HOST: ${KEYCLOAK_HOST}
+      SECRET: ${SECRET}
+    depends_on:
+      - discover
+
+  global-state-service:
+    container_name: global-state-service
+    image: global-state-service
+    ports:
+      - "9030:9030"
+    networks:
+      - nomad_network
+    environment:
+      IP: ${IP}
+      KAFKA_URL: ${KAFKA_URL}
+      EUREKA_IP: ${EUREKA_IP}
+    depends_on:
+      - discover
+
+  task-manager:
+    container_name: task-manager
+    image: task-manager
+    ports:
+      - "9031:9031"
+    networks:
+      - nomad_network
+    environment:
+      IP: ${IP}
+      KAFKA_URL: ${KAFKA_URL}
+      EUREKA_IP: ${EUREKA_IP}
+    depends_on:
+      - discover
+
+  livestream:
+    container_name: livestream
+    image: livestream
+    ports:
+      - "9029:9029"
+    networks:
+      - nomad_network
+    environment:
+      IP: ${IP}
+      KAFKA_URL: ${KAFKA_URL}
+      EUREKA_IP: ${EUREKA_IP}
+    depends_on:
+      - discover
 
   eureka-gateway:
     container_name: eureka-gateway
     image: eureka-gateway
     depends_on:
       - discover
-    restart: always
     environment:
       IP: discover
     ports:
       - "8000:8000"
     networks:
       - nomad_network
+
 
 networks:
   nomad_network:

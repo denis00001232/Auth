@@ -1,6 +1,8 @@
 server:
   port: 9001
-  address: ${IP:192.168.31.50}
+  address: 0.0.0.0
+
+
 
 logging:
   level:
@@ -12,20 +14,21 @@ logging:
 
 spring:
   kafka:
-      bootstrap-servers: ${KAFKA_URL:localhost:9094}
+      bootstrap-servers: ${KAFKA_URL:localhost}:9094
   application:
     name: auth
 
 eureka:
   instance:
     prefer-ip-address: true
-    ip-address: ${server.address}
-    instance-id: ${server.address}:${server.port}
+    ip-address: ${IP:192.186.31.50}
+    instance-id: ${IP:192.186.31.50}:${server.port}
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://${EUREKA_IP:192.168.31.50}:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
 
 
 secured: ${SECURED_HTTP:http}
+secret: ${SECRET:wuqUtDJ1oJi3GFKOmNF4DPgyULFv20ZO}

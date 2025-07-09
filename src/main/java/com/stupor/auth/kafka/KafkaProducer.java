@@ -3,6 +3,7 @@ package com.stupor.auth.kafka;
 import com.stupor.auth.dto.controller.UserLoginDto;
 import com.stupor.auth.dto.kafka.MogEnteredDto;
 import com.stupor.auth.dto.kafka.MogQuitDto;
+import com.stupor.auth.dto.kafka.MogRegisteredDto;
 import com.stupor.auth.util.StuporMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -28,7 +29,11 @@ public class KafkaProducer {
     public void sendLogout(String username) {
         MogQuitDto mogQuitDto = new MogQuitDto();
         mogQuitDto.setUsername(username);
-        send("mog-entered", mogQuitDto);
+        send("mog-quit", mogQuitDto);
+    }
+
+    public void sendRegister(MogRegisteredDto mogRegisteredDto) {
+        send("mog-registered", mogRegisteredDto);
     }
 
 

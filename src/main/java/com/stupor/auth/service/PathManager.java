@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 public class PathManager {
     @Value("${KEYCLOAK_HOST:localhost}")
     private String keyCloakAddress;
-    @Value("${DB_HOST:localhost}")
-    private String postgresAddress;
     @Value("${SECURED_HTTP:http}")
     private String pathPrefix;
 

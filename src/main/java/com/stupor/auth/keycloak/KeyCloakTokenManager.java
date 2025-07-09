@@ -5,6 +5,7 @@ import com.stupor.auth.dto.controller.TokenBoxDto;
 import com.stupor.auth.exception.LogInException;
 import com.stupor.auth.exception.RefreshException;
 import com.stupor.auth.service.PathManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,7 +22,8 @@ public class KeyCloakTokenManager {
     private final PathManager pathManager;
     private final String keycloakTokenUrl = "/realms/nomad/protocol/openid-connect/token";
     private final String clientId = "client";
-    private final String clientSecret = "wuqUtDJ1oJi3GFKOmNF4DPgyULFv20ZO";
+    @Value("${secret}")
+    private String clientSecret = "wuqUtDJ1oJi3GFKOmNF4DPgyULFv20ZO";
     private final RestTemplate restTemplate;
 
     public TokenBoxDto login(String username, String password) {
@@ -33,6 +35,7 @@ public class KeyCloakTokenManager {
         body.add("client_secret", clientSecret);
         body.add("username", username);
         body.add("password", password);
+
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
         try {
             ResponseEntity<TokenBoxDto> response = restTemplate.postForEntity(
