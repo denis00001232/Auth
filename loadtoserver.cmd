@@ -1,0 +1,1 @@
+scp .env stuporok@192.168.31.34:~/server/nomad
