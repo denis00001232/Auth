@@ -28,10 +28,10 @@ public class AuthController {
      * @param userRegisterDto
      */
     @PostMapping("/register")
-    public ResponseEntity<MessageDto> register(@RequestBody @Valid UserRegisterDto userRegisterDto) {
+    public ResponseEntity<UserAnswerRegisterDto> register(@RequestBody @Valid UserRegisterDto userRegisterDto) {
         userRegisterDto.setEmail(userRegisterDto.getUsername() + "@mail.ru");
         keycloakRegisterService.createUser(userRegisterDto);
-        return ResponseEntity.ok(new MessageDto("Успех"));
+        return ResponseEntity.status(201).body(new UserAnswerRegisterDto(userRegisterDto));
     }
 
     @PostMapping("/login")

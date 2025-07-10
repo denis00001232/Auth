@@ -1,1 +1,1 @@
-docker save -o my_images.tar discover global-state-service task-manager livestream auth eureka-gateway
+docker save -o t.tar global-state-service livestream
