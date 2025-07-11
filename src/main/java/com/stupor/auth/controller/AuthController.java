@@ -1,6 +1,8 @@
 package com.stupor.auth.controller;
 
 import com.stupor.auth.dto.controller.*;
+import com.stupor.auth.dto.kafka.MogDeletedDto;
+import com.stupor.auth.dto.kafka.MogRegisteredDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +33,15 @@ public class AuthController {
     public ResponseEntity<UserAnswerRegisterDto> register(@RequestBody @Valid UserRegisterDto userRegisterDto) {
         userRegisterDto.setEmail(userRegisterDto.getUsername() + "@mail.ru");
         keycloakRegisterService.createUser(userRegisterDto);
+        kafkaProducer.sendRegister(new MogRegisteredDto(userRegisterDto));
         return ResponseEntity.status(201).body(new UserAnswerRegisterDto(userRegisterDto));
+    }
+
+    @DeleteMapping("/delete-mog/{username}")
+    public ResponseEntity<?> deleteMog(@PathVariable String username) {
+        keycloakRegisterService.deleteUser(username);
+        kafkaProducer.sendDeleted(new MogDeletedDto(username));
+        return ResponseEntity.status(201).build();
     }
 
     @PostMapping("/login")

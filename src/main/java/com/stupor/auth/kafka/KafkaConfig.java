@@ -19,7 +19,7 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
-    @Value("${KAFKA_URL:localhost}")
+    @Value("${KAFKA_URL:192.168.31.34}")
     private String bootstrapServers;
 
     @Bean

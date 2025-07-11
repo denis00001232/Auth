@@ -1,6 +1,7 @@
 package com.stupor.auth.kafka;
 
 import com.stupor.auth.dto.controller.UserLoginDto;
+import com.stupor.auth.dto.kafka.MogDeletedDto;
 import com.stupor.auth.dto.kafka.MogEnteredDto;
 import com.stupor.auth.dto.kafka.MogQuitDto;
 import com.stupor.auth.dto.kafka.MogRegisteredDto;
@@ -35,6 +36,11 @@ public class KafkaProducer {
     public void sendRegister(MogRegisteredDto mogRegisteredDto) {
         send("mog-registered", mogRegisteredDto);
     }
+
+    public void sendDeleted(MogDeletedDto mogDeletedDto) {
+        send("mog-registered", mogDeletedDto);
+    }
+
 
 
 }

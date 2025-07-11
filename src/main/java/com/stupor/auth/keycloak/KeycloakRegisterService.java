@@ -1,6 +1,7 @@
 package com.stupor.auth.keycloak;
 
 import com.stupor.auth.exception.RecoverPasswordException;
+import com.stupor.auth.exception.UserNotFoundException;
 import com.stupor.auth.exception.UsernameAlreadyExistsException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
@@ -39,6 +40,24 @@ public class KeycloakRegisterService {
             if (response.getStatus() != 201) {
                 throw new UsernameAlreadyExistsException();
             }
+        }
+    }
+
+    public void deleteUser(String username) {
+        try {
+            List<UserRepresentation> users = keycloak.realm("nomad")
+                    .users()
+                    .search(username, true); // true для поиска по точному совпадению
+
+            if (users.isEmpty()) {
+                throw new UserNotFoundException(username);
+            }
+
+            keycloak.realm("nomad")
+                    .users()
+                    .delete(users.get(0).getId());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete user: " + username, e);
         }
     }
 
